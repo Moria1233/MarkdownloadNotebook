@@ -26,13 +26,40 @@
         console.log(html)
 
         var vm = new Vue({
+            created() {
+                this.content = localStorage.getItem('content') || 'you can write in **markdown**'
+            },
             el: '#notebook',
             data: {
-                content: ""
+                content: "",
+                notes: [],
+                items: [
+                    { title: 'item 1' },
+                    { title: 'item 2' },
+                    { title: 'item 3' },
+                ]
             },
-            computed:{
-                previewMarked(){
+            computed: {
+                previewMarked() {
                     return marked(this.content)
+                },
+                addButtonTitle() {
+                    return this.notes.length + 'notebook'
+                },
+            },
+            watch: {
+                content: {
+                    handler: 'saveNote'
+                }
+            },
+            methods: {
+                addNote() {
+                    const time = Date.now()
+                    const note = {
+                        id: String(time),
+                        title: 'New note' + (this.notes.length + 1),
+                        content: '**Hi**'
+                    }
                 }
             }
         })
