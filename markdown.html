@@ -41,8 +41,8 @@
 
             data: {
                 content: "",
-                notes: JSON.parse(localStroage.getItem('note')) || [],
-                selectedId: null,
+                notes: JSON.parse(localStorage.getItem('notes')) || [],
+                selectedId: localStorage.getItem('selected-id') || null,
             },
 
             computed: {
@@ -60,12 +60,15 @@
             },
 
             watch: {
-                //content: {
-                //  handler: 'saveNote',
-                //}
+                content: {
+                    handler: 'saveNote',
+                },
                 notes: {
                     handler: 'saveNote',
                     deep: true
+                },
+                selectedId(val) {
+                    localStorage.setItem('selected-id', val)
                 }
             },
 
@@ -83,14 +86,22 @@
                 },
 
                 saveNote() {
-                    console.log('saving note:', this.notes)
+                    console.log('Notes saved: ', this.notes)
                     localStorage.setItem('notes', JSON.stringify(this.notes))
-                    //localStorage.setItem('content', this.content)
                 },
 
                 selectNote(note) {
                     this.selectedId = note.id,
                         console.log(this.selectedId)
+                },
+                removeNote() {
+                    console.log("remove note is called")
+                    if (this.selectedNote && confirm('Delete the note ?')) {
+                        const index = this.notes.indexOf(this.selectedNote)
+                        if (index !== -1) {
+                            this.notes.splice(index, 1)
+                        }
+                    }
                 }
             }
         })
